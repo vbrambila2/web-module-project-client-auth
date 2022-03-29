@@ -1,4 +1,5 @@
 import React, {  useState} from 'react';
+import { Navigate } from 'react-router-dom';
 
 const initialFriendValues = {
     id: null,
@@ -10,6 +11,10 @@ const initialFriendValues = {
 export default function AddFriend(props) {
     const [values, setValues] = useState(initialFriendValues)
     const { onSubmit } = props
+
+    if (!window.localStorage.getItem('token')) {
+        return <Navigate to="/" />
+      }
 
     const onChange = e => {
         const { id, value } = e.target

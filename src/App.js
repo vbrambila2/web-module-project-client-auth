@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Routes, Route, useNavigate, NavLink } from 'react-router-dom';
 import Login from './Login';
@@ -12,6 +12,7 @@ const loginUrl = 'http://localhost:9000/api/login'
 const friendsUrl = 'http://localhost:9000/api/friends'
 
 function App() {
+  const[friend, setFriend] = useState([])
 
   const navigate = useNavigate()
 
@@ -35,7 +36,7 @@ function App() {
   const getFriends = () => {
     axiosWithAuth().get(friendsUrl)
       .then(res => {
-        console.log(res, "friends")
+        setFriend(res.data)
       })
       .catch(err => {
         console.error(err)
@@ -45,7 +46,7 @@ function App() {
   const postFriend = friend => {
     axiosWithAuth().post(friendsUrl, friend)
       .then(res => {
-        console.log(res, "post")
+        setFriend([ ...friend, res.data ])
       })
       .catch(err => {
         console.error(err)
@@ -62,7 +63,7 @@ function App() {
         <Route path="/" element={<Login login={login} />} />
         <Route path="/login" element={<Login login={login} />} />
         <Route path="/logout" element={<Logout logout={logout} /> } />
-        <Route path="/friends" element={<FriendsList getFriends={getFriends} />} />
+        <Route path="/friends" element={<FriendsList getFriends={getFriends} list={friend} />} />
         <Route path="/friends/add" element={<AddFriend onSubmit={postFriend} />} />
       </Routes>
     </div>
